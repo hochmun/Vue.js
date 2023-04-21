@@ -1,16 +1,27 @@
 <template>
   <li>
     <i class="fa fa-check" aria-hidden="true"></i>
-    <span>청소하기</span>
-    <button>삭제</button>
+    <span>{{ todo.todoContent }}</span>
+    <button @click="btnDelete(todo.todoNum)">삭제</button>
   </li>
 </template>
 
 <script>
 export default {
   name: "Item",
-  setup() {
-    return {};
+  props: {
+    todo: Object,
+    index: Number,
+  },
+  setup(props, context) {
+    const todo = props.todo;
+    const index = props.index;
+
+    const btnDelete = (todoNum) => {
+      context.emit("deleteTodo", todoNum, index);
+    };
+
+    return { todo, index, btnDelete };
   },
 };
 </script>

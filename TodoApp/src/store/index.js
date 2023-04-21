@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import axios from "axios";
 
 const store = createStore({
   state: {
@@ -19,11 +20,40 @@ const store = createStore({
     addTodo(context, todo) {
       context.commit("ADD_TODO", todo);
     },
-    removeTodo(context, index) {
-      context.commit("REMOVE_TODO", index);
+    async removeTodo(context, value) {
+      await axios
+        .delete("http://localhost:8080/Todo/vue/index/" + value.todoNum)
+        .then((response) => {
+          if (response.data > 0) {
+            context.commit("REMOVE_TODO", value.index);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-    clearTodo(context) {
-      context.commit("CLEAR_TODO");
+    async clearTodo(context) {
+      await axios
+        .delete("http://localhost:8080/Todo/vue/index")
+        .then((response) => {
+          console.log(response);
+          if (response.data > 0) context.commit("CLEAR_TODO");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async insertTodo(context, todo) {
+      console.log("insertTodo");
+      await axios
+        .put("http://localhost:8080/Todo/vue/index", { todoContent: todo })
+        .then((response) => {
+          console.log(response);
+          context.commit("ADD_TODO", response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   getters: {

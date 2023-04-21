@@ -1,7 +1,7 @@
 <template>
-  <Header v-on:addTodo="addTodoHandler"></Header>
-  <Main></Main>
-  <Footer></Footer>
+  <Header v-on:addTodo="addTodoHandler" />
+  <Main />
+  <Footer v-on:btnClearAll="clearAllHandler" />
 </template>
 
 <script>
@@ -22,10 +22,14 @@ export default {
 
     const addTodoHandler = (value) => {
       //alert(value);
-      store.dispatch("addTodo", value);
+      store.dispatch("insertTodo", value);
     };
 
-    return { addTodoHandler };
+    const clearAllHandler = () => {
+      store.dispatch("clearTodo");
+    };
+
+    return { addTodoHandler, clearAllHandler };
   },
 };
 </script>

@@ -1,13 +1,21 @@
 <template>
   <main>
     <ul>
-      <Item></Item>
+      <Item
+        v-for="(todo, index) in todos"
+        :todo="todo"
+        :index="index"
+        v-on:deleteTodo="deleteTodoHandler"
+      />
     </ul>
   </main>
 </template>
 
 <script>
 import Item from "./Item.vue";
+import { useStore } from "vuex";
+import { computed, onBeforeMount } from "vue";
+import axios from "axios";
 
 export default {
   name: "Main",
@@ -15,7 +23,29 @@ export default {
     Item,
   },
   setup() {
-    return {};
+    const store = useStore();
+
+    const todos = computed(() => store.getters.todos);
+
+    const deleteTodoHandler = (todoNum, index) => {
+      //alert(index);
+      store.dispatch("removeTodo", { todoNum: todoNum, index: index });
+    };
+
+    onBeforeMount(async () => {
+      axios
+        .get("http://localhost:8080/Todo/vue/index")
+        .then((response) => {
+          response.data.forEach((todo) => {
+            store.dispatch("addTodo", todo);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+
+    return { todos, deleteTodoHandler };
   },
 };
 </script>
