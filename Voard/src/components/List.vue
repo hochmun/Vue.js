@@ -2,7 +2,10 @@
   <v-app>
     <v-app-bar>
       <v-app-bar-title>글 목록</v-app-bar-title>
-      <v-btn @click="btnLogout">로그아웃</v-btn>
+      <p>
+        {{ user?.nick }} 님 반갑습니다.
+        <v-btn @click="btnLogout">로그아웃</v-btn>
+      </p>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -66,11 +69,17 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const router = useRouter();
+const store = useStore();
+
+const user = computed(() => store.getters.user);
 
 const btnLogout = () => {
+  localStorage.removeItem("accessToken");
   router.push("/user/login");
 };
 

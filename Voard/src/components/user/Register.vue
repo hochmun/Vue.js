@@ -19,10 +19,13 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.uid"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7">
-                  <v-btn color="warning" class="ml-2">중복 확인</v-btn>
+                  <v-btn color="warning" class="ml-2" @click="btnUidCheck"
+                    >중복 확인</v-btn
+                  >
                 </v-col>
               </v-row>
 
@@ -34,6 +37,7 @@
                     hide-details="true"
                     density="compact"
                     type="password"
+                    v-model="user.pass1"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -47,6 +51,7 @@
                     hide-details="true"
                     density="compact"
                     type="password"
+                    v-model="user.pass2"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -67,6 +72,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.name"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -79,6 +85,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.nick"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -91,6 +98,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.email"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -103,6 +111,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.hp"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7"> </v-col>
@@ -115,6 +124,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.zip"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7">
@@ -129,6 +139,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.addr1"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4"> </v-col>
@@ -141,6 +152,7 @@
                     variant="outlined"
                     hide-details="true"
                     density="compact"
+                    v-model="user.addr2"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4"> </v-col>
@@ -150,7 +162,7 @@
 
           <v-sheet class="text-center py-4">
             <v-btn class="mr-2" @click="btnCancel">취소</v-btn>
-            <v-btn color="primary" @click="">회원가입</v-btn>
+            <v-btn color="primary" @click="btnRegister">등록</v-btn>
           </v-sheet>
         </v-sheet>
       </v-container>
@@ -159,12 +171,56 @@
 </template>
 
 <script setup>
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
+const user = reactive({
+  uid: null,
+  pass1: null,
+  pass2: null,
+  name: null,
+  nick: null,
+  email: null,
+  hp: null,
+  zip: null,
+  addr1: null,
+  addr2: null,
+});
 
 const btnCancel = () => {
   router.push("/user/login");
+};
+
+// uid 중복 검사
+const btnUidCheck = () => {
+  axios
+    .post()
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const btnRegister = () => {
+  // 유효성 검사
+  // 회원 가입 전송
+  axios
+    .post("http://localhost:8080/Voard/user/register", user)
+    .then((response) => {
+      console.log(response);
+      if (response.data > 0) {
+        alert("회원 가입 성공!");
+      } else {
+        alert("회원 가입에 실패 하였습니다.");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 </script>
 
