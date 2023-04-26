@@ -23,9 +23,30 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="7">
-                  <v-btn color="warning" class="ml-2" @click="btnUidCheck"
+                  <v-btn
+                    :loading="uidCkeckLoading"
+                    color="warning"
+                    class="ml-2"
+                    @click="btnUidCheck"
                     >중복 확인</v-btn
                   >
+                  <v-chip
+                    v-if="uidCheck == false"
+                    class="ma-2"
+                    color="red"
+                    text-color="white"
+                  >
+                    이미 사용중인 아이디 입니다.
+                  </v-chip>
+
+                  <v-chip
+                    v-if="uidCheck == true"
+                    class="ma-2"
+                    color="green"
+                    text-color="white"
+                  >
+                    사용 가능한 아이디 입니다.
+                  </v-chip>
                 </v-col>
               </v-row>
 
@@ -174,6 +195,7 @@
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { ref } from "vue";
 
 const router = useRouter();
 const user = reactive({
@@ -188,6 +210,8 @@ const user = reactive({
   addr1: null,
   addr2: null,
 });
+const uidCheck = ref(null);
+const uidCkeckLoading = ref(false);
 
 const btnCancel = () => {
   router.push("/user/login");
@@ -195,13 +219,29 @@ const btnCancel = () => {
 
 // uid 중복 검사
 const btnUidCheck = () => {
+  uidCkeckLoading.value = true;
+
   axios
-    .post()
+    .get("http://localhost:8080/Voard/user/checkUid", {
+      params: { uid: user.uid },
+    })
     .then((response) => {
-      console.log(response);
+      //console.log(response);
+
+      setTimeout(() => {
+        uidCkeckLoading.value = false;
+
+        if (response.data > 0) {
+          uidCheck.value = false;
+        } else {
+          uidCheck.value = true;
+        }
+      }, 500);
     })
     .catch((error) => {
       console.log(error);
+      alert("중복확인 중 에러가 발생 했습니다.");
+      uidCkeckLoading.value = false;
     });
 };
 
