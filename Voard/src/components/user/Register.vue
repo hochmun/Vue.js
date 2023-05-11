@@ -222,7 +222,7 @@ const btnUidCheck = () => {
   uidCkeckLoading.value = true;
 
   axios
-    .get("http://localhost:8080/Voard/user/checkUid", {
+    .get("/user/checkUid", {
       params: { uid: user.uid },
     })
     .then((response) => {
@@ -249,7 +249,7 @@ const btnRegister = () => {
   // 유효성 검사
   // 회원 가입 전송
   axios
-    .post("http://localhost:8080/Voard/user/register", user)
+    .post("/user/register", user)
     .then((response) => {
       console.log(response);
       if (response.data > 0) {

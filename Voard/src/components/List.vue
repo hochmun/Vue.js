@@ -15,38 +15,24 @@
               <tr>
                 <th class="text-center" width="80">번호</th>
                 <th class="text-center" width="auto">제목</th>
-                <th class="text-center" width="90">글쓴이</th>
+                <th class="text-center" width="120">글쓴이</th>
                 <th class="text-center" width="90">조회수</th>
-                <th class="text-center" width="100">등록일</th>
+                <th class="text-center" width="120">등록일</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="text-center">3</td>
-                <td class="text-left">
-                  <a @click="goView">제목입니다.</a>
+              <tr v-for="(vo, index) in state.data.vos">
+                <td class="text-center">
+                  {{ state.data.dto.pageStartNum - index }}
                 </td>
-                <td class="text-center">홍길동</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-24</td>
-              </tr>
-              <tr>
-                <td class="text-center">2</td>
                 <td class="text-left">
-                  <a @click="goView">제목입니다.</a>
+                  <a @click="goView">{{ vo.title }}</a>
                 </td>
-                <td class="text-center">홍길동</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-24</td>
-              </tr>
-              <tr>
-                <td class="text-center">1</td>
-                <td class="text-left">
-                  <a @click="goView">제목입니다.</a>
+                <td class="text-center">
+                  {{ vo.nick == null ? "탈퇴한 유저" : vo.nick }}
                 </td>
-                <td class="text-center">홍길동</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-24</td>
+                <td class="text-center">{{ vo.hit }}</td>
+                <td class="text-center">{{ vo.rdate }}</td>
               </tr>
             </tbody>
           </v-table>
@@ -57,9 +43,11 @@
 
           <div class="text-center">
             <v-pagination
-              :length="100"
+              :length="state.data.dto?.lastPage"
+              v-model="page"
               rounded="circle"
-              :total-visible="5"
+              :total-visible="7"
+              @click="pageClickHandler"
             ></v-pagination>
           </div>
         </v-sheet>
@@ -69,7 +57,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import axios from "axios";
+import { reactive, computed, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -77,6 +66,11 @@ const router = useRouter();
 const store = useStore();
 
 const user = computed(() => store.getters.user);
+
+const state = reactive({
+  data: {},
+});
+const page = ref(1);
 
 const btnLogout = () => {
   localStorage.removeItem("accessToken");
@@ -89,6 +83,29 @@ const btnWrite = () => {
 
 const goView = () => {
   router.push("/view");
+};
+
+const pageClickHandler = async () => {
+  //alert("click" + page.value);
+  await getArticles(page.value);
+};
+
+onBeforeMount(() => {
+  getArticles(page.value);
+});
+
+const getArticles = async (pg) => {
+  axios
+    .get("/list", {
+      params: { pg: pg },
+    })
+    .then((response) => {
+      console.log(response);
+      state.data = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 </script>
 

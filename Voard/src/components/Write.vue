@@ -76,7 +76,7 @@ const btnCancle = () => {
 
 const btnWrite = () => {
   axios
-    .put("http://localhost:8080/Voard/write", article)
+    .put("/write", article)
     .then((response) => {
       const result = response.data;
 

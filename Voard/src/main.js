@@ -14,6 +14,10 @@ import { createApp } from "vue";
 import { registerPlugins } from "@/plugins";
 import router from "./routers/index.js";
 import store from "./store/index.js";
+import axios from "axios";
+
+// axios 전역 설정
+axios.defaults.baseURL = "http://13.124.4.157:8081";
 
 const app = createApp(App);
 

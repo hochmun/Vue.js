@@ -73,7 +73,7 @@ const btnRegister = () => {
 
 const btnLogin = () => {
   axios
-    .post("http://localhost:8080/Voard/user/login", user)
+    .post("/user/login", user)
     .then((response) => {
       localStorage.setItem("accessToken", response.data.accessToken);
       store.dispatch("setUser", response.data.user);

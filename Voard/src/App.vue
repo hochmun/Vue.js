@@ -21,7 +21,7 @@ onBeforeMount(() => {
   }
 
   axios
-    .get("http://localhost:8080/Voard/user", {
+    .get("/user", {
       headers: { "X-AUTH-TOKEN": accessToken },
     })
     .then((response) => {
@@ -31,6 +31,8 @@ onBeforeMount(() => {
     })
     .catch((error) => {
       console.log(error);
+      router.push("/user/login");
+      return;
     });
 });
 </script>
